@@ -1,3 +1,16 @@
+"""
+SCC231 - Introdução a Sistemas Inteligentes
+Professor: Alneu de Andrade Lopes
+PAE: Fabiana Góes
+
+
+Projeto - Classificação textual com Naive Bayes
+
+Aluno: Elisa Saltori Trujillo (8551100)
+
+
+"""
+
 import os
 from collections import Counter
 from textHelper import TextHelper
@@ -5,29 +18,21 @@ from naiveBayesTextClassifier import NaiveBayesTextClassifier
 from sklearn.model_selection import KFold
 import numpy as np
 
-#read documents by class
 
-#clean documents, tokenize
-
-#test algorithm
-#10 fold cross validation
-#   fit naive bayes
-#       count words and get vocabulary
-#       get probabilities
-#   stest
-
-
-DATA_DIR = "docs"
+DATA_DIR = "docs" #folder where the corpus is
 
 def main():
+    """
+    Train and test naive bayes classifier on CBR-IL-PIR corpus.
+    
+    Read documents from DATA_DIR directory.
+    Run 10-fold cross validation test with naive bayes.
+    Print results of test
 
+    """
     print("Reading documents...")
     data, target = get_documents()
     print("Done!")
-
-    clf = NaiveBayesTextClassifier()
-    
-    clf.fit(data, target)
 
     accuracies = test_naiveBayes(data, target)
 
@@ -40,25 +45,39 @@ def main():
 
 
 def test_naiveBayes(data, target):
+    """
+    Apply 10-fold cross validation to Naive Bayes algorithm
+    
+    Parameters:
+        data - array with the text of each document
+        target - array with the class attribute of each document
 
+    Return:
+        Array with the accuracy of each test
+
+    """
     print("Beginning naive Bayes test")
 
     #divide data into 10 folds
     kfold = KFold(10, True)
-    accuracies = []
 
+    accuracies = [] #accuracy results
+
+    #conversion to arrays to be able to index it with train, test lists
     data_array = np.asarray(data)
     target_array = np.asarray(target)
 
     
-    i=1
+    i=1 #counter for folds
 
     #for each fold
     for train, test in kfold.split(data):
         print("...working on fold", i)
         i+=1
         clf = NaiveBayesTextClassifier()
+        #train classifier
         clf.fit(data_array[train],target_array[train])
+        #test accuracy with test fold
         accuracies.append(clf.accuracy_test(data_array[test], target_array[test]))
 
     print("Done!")
@@ -91,4 +110,5 @@ def get_documents():
 
 
 
-main()
+if __name__ == "__main__":
+    main()
