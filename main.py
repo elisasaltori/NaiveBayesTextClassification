@@ -2,6 +2,8 @@ import os
 from collections import Counter
 from textHelper import TextHelper
 from naiveBayesTextClassifier import NaiveBayesTextClassifier
+from sklearn.model_selection import KFold
+import numpy as np
 
 #read documents by class
 
@@ -15,29 +17,53 @@ from naiveBayesTextClassifier import NaiveBayesTextClassifier
 #   stest
 
 
-
-TARGET_NAMES = ["CBR", "ILP", "RI"]
 DATA_DIR = "docs"
 
 def main():
 
+    print("Reading documents...")
     data, target = get_documents()
+    print("Done!")
 
     clf = NaiveBayesTextClassifier()
     
     clf.fit(data, target)
 
-    ac = 0
-    for i in range(0,len(target)):
-        output = clf.classify(data[i])
-        if(output==target[i]):
-            ac+=1
-            #print("right")
-        #print(i,"- expected",target[i],"got", output)
-        #input()
+    accuracies = test_naiveBayes(data, target)
 
-    print(ac/len(target))
-    #print(clean_tokens)
+    print()
+    print("Results:")
+    print(accuracies)
+    print("Mean accuracy:", sum(accuracies) / len(accuracies))
+    print("Variance:", np.std(accuracies))
+
+
+
+def test_naiveBayes(data, target):
+
+    print("Beginning naive Bayes test")
+
+    #divide data into 10 folds
+    kfold = KFold(10, True)
+    accuracies = []
+
+    data_array = np.asarray(data)
+    target_array = np.asarray(target)
+
+    
+    i=1
+
+    #for each fold
+    for train, test in kfold.split(data):
+        print("...working on fold", i)
+        i+=1
+        clf = NaiveBayesTextClassifier()
+        clf.fit(data_array[train],target_array[train])
+        accuracies.append(clf.accuracy_test(data_array[test], target_array[test]))
+
+    print("Done!")
+
+    return accuracies
 
 
 

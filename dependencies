@@ -1,2 +1,3 @@
-pip install stop-words
-pip install stemming
+pip3 install stop-words
+pip3 install stemming
+pip3 install sklearn

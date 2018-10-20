@@ -84,7 +84,15 @@ class NaiveBayesTextClassifier():
         return math.log((count + 1.0)/(self.class_vocab_size[target]+ self.vocab_size))
 
 
+    def accuracy_test(self, data, target):
 
+        corr = 0
+
+        for i in range(0, len(target)):
+            if(self.classify(data[i])==target[i]):
+                corr+=1
+
+        return (corr/len(target))
 
 
 
