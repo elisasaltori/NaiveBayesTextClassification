@@ -1,0 +1,2 @@
+pip install stop-words
+pip install stemming
