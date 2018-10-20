@@ -1,5 +1,6 @@
 from collections import Counter
 from textHelper import TextHelper
+import math
 
 class NaiveBayesTextClassifier():
 
@@ -13,7 +14,8 @@ class NaiveBayesTextClassifier():
         
         for c in self.class_count:
             self.class_prob[c] = float(self.class_count[c])/len(targets) 
-            print(c, self.class_count[c], self.class_prob[c])
+            #use log of probability so classifier doesnt underflow
+            self.class_prob[c] = math.log(self.class_prob[c])
         
         self.word_counts = {} #word counts for each class
 
@@ -62,8 +64,7 @@ class NaiveBayesTextClassifier():
                 if(word in self.vocab):
                     if(word not in words):
                         words.add(word)
-                        prob[name]*= self.get_probability(word, name)
-                        print(prob[name])
+                        prob[name] += self.get_probability(word, name)
 
 
         #return class
@@ -80,7 +81,7 @@ class NaiveBayesTextClassifier():
         count = self.word_counts[target].get(word, 0.0) 
 
 
-        return (count + 1)/(self.class_vocab_size[target]+ self.vocab_size)
+        return math.log((count + 1.0)/(self.class_vocab_size[target]+ self.vocab_size))
 
 
 

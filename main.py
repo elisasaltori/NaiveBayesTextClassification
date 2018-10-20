@@ -23,8 +23,6 @@ def main():
 
     data, target = get_documents()
 
-    print(data[10], target[10])
-
     clf = NaiveBayesTextClassifier()
     
     clf.fit(data, target)
@@ -36,11 +34,9 @@ def main():
             ac+=1
             #print("right")
         #print(i,"- expected",target[i],"got", output)
-        input()
+        #input()
 
     print(ac/len(target))
-    """
-    """
     #print(clean_tokens)
 
 
